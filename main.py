@@ -17,6 +17,7 @@ from app.videoCallParticipants import models as videoCallParticipants
 from app.user.routes import router as users_router
 from app.contacts.routes import router as contacts_router
 from app.videoCallParticipants.routes import router as videoCallParticipants_router
+from app.customSign.routes import router as customSign_router
 
 import uvicorn
 app = FastAPI()
@@ -24,6 +25,7 @@ app = FastAPI()
 app.include_router(users_router)
 app.include_router(contacts_router)
 app.include_router(videoCallParticipants_router)
+app.include_router(customSign_router)
 
 #
 # @app.get('/checkDatabase')

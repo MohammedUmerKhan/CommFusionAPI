@@ -21,6 +21,7 @@ from app.customSign.routes import router as customSign_router
 
 import uvicorn
 app = FastAPI()
+
 # Mount routers
 app.include_router(users_router)
 app.include_router(contacts_router)

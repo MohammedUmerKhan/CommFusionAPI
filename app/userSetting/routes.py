@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import database
-from app.userSetting.services import get_user_settings,update_user_settings
+from app.userSetting.services import get_user_settings,update_user_settings, create_default_user_settings
 from app.userSetting.schemas import UserSettings, UpdateUserSettings
 from typing import List
 router = APIRouter(prefix="/usersettings", tags=['User Settings'])
@@ -21,3 +21,8 @@ def update_user_setting(settings: UpdateUserSettings, db: Session = Depends(data
     if "error" in response:
         raise HTTPException(status_code=500, detail="Failed to update user settings")
     return response
+
+
+@router.post("/{user_id}/default")
+def create_default_settings(user_id: int, db: Session = Depends(database.get_db)):
+    return create_default_user_settings(db, user_id)

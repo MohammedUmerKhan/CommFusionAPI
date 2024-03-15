@@ -19,6 +19,7 @@ from app.contacts.routes import router as contacts_router
 from app.videoCallParticipants.routes import router as videoCallParticipants_router
 from app.customSign.routes import router as customSign_router
 from app.userFavouriteGesture.routes import router as userFavouriteGesture_router
+from app.userSetting.routes import router as userSettings_router
 
 import uvicorn
 app = FastAPI()
@@ -29,6 +30,7 @@ app.include_router(contacts_router)
 app.include_router(videoCallParticipants_router)
 app.include_router(customSign_router)
 app.include_router(userFavouriteGesture_router)
+app.include_router(userSettings_router)
 #
 # @app.get('/checkDatabase')
 # def index():

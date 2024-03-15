@@ -62,3 +62,13 @@ class UserSearchResult(BaseModel):
     lname: str
     account_status: str
     is_friend: bool
+
+
+class UpdateUserProfile(BaseModel):
+    user_id: int
+    current_password: str
+    new_password: str = None
+    new_fname: str = None
+    new_lname: str = None
+    new_bio_status: str = None
+    new_disability_type: str = None

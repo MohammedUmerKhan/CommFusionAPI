@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from app.user.models import User
 from app.contacts.models import Contacts
-from app.user.schemas import UserLogin, UserSearchResult
+from app.user.schemas import UserLogin, UserSearchResult, UpdateUserProfile
 from app.user.schemas import UserSignup
 # from typing import Union
 from sqlalchemy.exc import SQLAlchemyError
@@ -124,4 +124,42 @@ def search_user(db: Session, user_id: int, search_username: str):
 
         return result
     except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def update_user_profile(db: Session, data: UpdateUserProfile):
+    try:
+        # Retrieve the user
+        user = db.query(User).filter_by(Id=data.user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Validate current password
+        if user.Password != data.current_password:
+            raise HTTPException(status_code=401, detail="Incorrect current password")
+
+        # Update profile information
+        if data.new_fname:
+            user.Fname = data.new_fname
+
+        if data.new_lname:
+            user.Lname = data.new_lname
+
+        if data.new_bio_status:
+            user.BioStatus = data.new_bio_status
+
+        if data.new_disability_type:
+            user.DisabilityType = data.new_disability_type
+
+        if data.new_password:
+            user.Password = data.new_password
+
+        db.commit()
+
+        return {"message": "Profile updated successfully"}, 200
+
+    except HTTPException as http_err:
+        raise http_err
+
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

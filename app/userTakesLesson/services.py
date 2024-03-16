@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from app.lesson.models import Lesson
 from app.userTakesLesson.models import UserTakesLesson
 
 
@@ -18,3 +19,18 @@ def add_user_lesson(db: Session, user_id: int, lesson_id: int) -> dict:
 
     except Exception as e:
         return {"error": str(e)}
+
+
+def get_user_lessons(db: Session, user_id: int, language_type: str) -> list:
+    try:
+        # Query user's taken lessons based on the user ID and language type
+        user_lessons = db.query(Lesson.LessonType).join(UserTakesLesson, Lesson.Id == UserTakesLesson.LessonId).filter(UserTakesLesson.UserId == user_id, Lesson.LanguageType == language_type).all()
+
+        # Extract lesson types from the result
+        lesson_types = [lesson.LessonType for lesson in user_lessons]
+
+        return lesson_types
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []

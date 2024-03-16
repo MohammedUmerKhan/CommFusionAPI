@@ -61,3 +61,38 @@ def add_video_call_participant(db: Session, video_call_id: int, user_id: int):
     db.add(participant)
     db.commit()
     return True
+
+def end_call(db: Session, video_call_id: int, user_id: int):
+    try:
+        video_call = db.query(VideoCall).filter(VideoCall.Id == video_call_id).first()
+        if not video_call:
+            return False
+
+        # Check if the user is the caller
+        is_caller = db.query(VideoCallParticipants.isCaller).filter(
+            VideoCallParticipants.VideoCallId == video_call_id,
+            VideoCallParticipants.UserId == user_id
+        ).scalar()
+
+        if is_caller:
+            # Update end time for all participants
+            db.query(VideoCallParticipants).filter(
+                VideoCallParticipants.VideoCallId == video_call_id,
+                VideoCallParticipants.EndTime == None
+            ).update({"EndTime": datetime.now()})
+
+            # Update end time in video call table
+            video_call.EndTime = datetime.now()
+            db.commit()
+        else:
+            # Update end time for the user only
+            db.query(VideoCallParticipants).filter(
+                VideoCallParticipants.VideoCallId == video_call_id,
+                VideoCallParticipants.UserId == user_id
+            ).update({"EndTime": datetime.now()})
+
+        db.commit()
+        return True
+    except Exception as e:
+        db.rollback()
+        raise e

@@ -22,6 +22,7 @@ from app.userFavouriteGesture.routes import router as userFavouriteGesture_route
 from app.userSetting.routes import router as userSettings_router
 from app.lesson.routes import router as lesson_router
 from app.gesture.routes import router as gesture_router
+from app.userTakesLesson.routes import router as userTakesLesson_router
 import uvicorn
 app = FastAPI()
 
@@ -34,6 +35,7 @@ app.include_router(userFavouriteGesture_router)
 app.include_router(userSettings_router)
 app.include_router(lesson_router)
 app.include_router(gesture_router)
+app.include_router(userTakesLesson_router)
 #
 # @app.get('/checkDatabase')
 # def index():

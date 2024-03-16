@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Path
 from sqlalchemy.orm import Session
 from app.db import database
-from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile
+from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile,UserOnlineStatusUpdate
 from app.user.services import authenticate_user, get_users, signup_user, uploadprofilepicture_user, get_user_details, \
-    search_user, update_user_profile
+    search_user, update_user_profile,update_user_online_status
 from typing import List
 
 router = APIRouter(prefix="/user", tags=['User'])
@@ -52,3 +52,7 @@ def signup_user_route(id: int, profile_picture: UploadFile = File(...), db: Sess
 @router.put("/update-profile")
 def update_user_profile_route(data: UpdateUserProfile, db: Session = Depends(database.get_db)):
     return update_user_profile(db, data)
+
+@router.put("/{user_id}/online-status")
+def update_user_online_status_route(user_id: int, online_status: int, db: Session = Depends(database.get_db)):
+    return update_user_online_status(db, user_id, online_status)

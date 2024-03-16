@@ -72,3 +72,7 @@ class UpdateUserProfile(BaseModel):
     new_lname: str = None
     new_bio_status: str = None
     new_disability_type: str = None
+
+
+class UserOnlineStatusUpdate(BaseModel):
+    online_status: int

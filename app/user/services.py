@@ -185,3 +185,20 @@ def update_user_online_status(db: Session, user_id: int, online_status: int):
         return {"message": "User online status updated successfully", "Id": user.Id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+def update_user_account_status_to_deleted(db: Session, user_id: int):
+    try:
+        # Fetch the user by id
+        user = db.query(User).filter(User.Id == user_id).first()
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Update the AccountStatus attribute to "Deleted" in the user model
+        user.AccountStatus = "Deleted"
+
+        # Commit the changes to the database
+        db.commit()
+
+        return {"message": "User account status updated to 'Deleted' successfully", "Id": user.Id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Path
 from sqlalchemy.orm import Session
 from app.db import database
-from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile,UserOnlineStatusUpdate
+from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile
 from app.user.services import authenticate_user, get_users, signup_user, uploadprofilepicture_user, get_user_details, \
-    search_user, update_user_profile,update_user_online_status
+    search_user, update_user_profile,update_user_online_status, update_user_account_status_to_deleted
 from typing import List
 
 router = APIRouter(prefix="/user", tags=['User'])
@@ -56,3 +56,8 @@ def update_user_profile_route(data: UpdateUserProfile, db: Session = Depends(dat
 @router.put("/{user_id}/online-status")
 def update_user_online_status_route(user_id: int, online_status: int, db: Session = Depends(database.get_db)):
     return update_user_online_status(db, user_id, online_status)
+
+
+@router.put("/{user_id}/delete")
+def update_user_account_status_to_deleted_route(user_id: int, db: Session = Depends(database.get_db)):
+    return update_user_account_status_to_deleted(db, user_id)

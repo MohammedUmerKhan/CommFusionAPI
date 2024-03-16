@@ -1,13 +1,16 @@
 import os
+import uuid
+from datetime import datetime
 from fastapi import UploadFile, HTTPException
 from datetime import datetime
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.user.models import User
 from app.contacts.models import Contacts
 from app.user.schemas import UserLogin, UserSearchResult, UpdateUserProfile
 from app.user.schemas import UserSignup
-# from typing import Union
-from sqlalchemy.exc import SQLAlchemyError
+
 
 
 def get_users(db: Session):
@@ -60,12 +63,13 @@ def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile)
             return {"message": "User not found"}
 
         # Define the directory where images will be saved
-        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images"
-        # os.makedirs(image_dir, exist_ok=True)  # Create the directory if it doesn't exist
+        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\\profile"
+        # Create the directory if it doesn't exist
+        os.makedirs(image_dir, exist_ok=True)
 
         # Generate a unique filename for the uploaded file
-        filename = profile_picture.filename
-        file_path = os.path.join(image_dir, filename)
+        unique_filename = f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        file_path = os.path.join(image_dir, unique_filename)
 
         # Write the file to disk
         with open(file_path, "wb") as f:

@@ -96,3 +96,20 @@ def end_call(db: Session, video_call_id: int, user_id: int):
     except Exception as e:
         db.rollback()
         raise e
+
+def rate_call_quality(db: Session, video_call_id: int, user_id: int, call_quality: int):
+    try:
+        participant = db.query(VideoCallParticipants).filter(
+            VideoCallParticipants.VideoCallId == video_call_id,
+            VideoCallParticipants.UserId == user_id
+        ).first()
+
+        if not participant:
+            return False
+
+        participant.CallQuality = call_quality
+        db.commit()
+        return True, "Thanks for rating!"
+    except Exception as e:
+        db.rollback()
+        raise e

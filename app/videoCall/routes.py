@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import database
-from app.videoCall.services import start_video_call, accept_video_call, add_video_call_participant,end_call
-from app.videoCall.schemas import VideoCallStart, VideoCallAccept, VideoCallParticipantAdd,EndCallRequest
+from app.videoCall.services import start_video_call, accept_video_call, add_video_call_participant, end_call, \
+    rate_call_quality
+from app.videoCall.schemas import VideoCallStart, VideoCallAccept, VideoCallParticipantAdd, EndCallRequest, \
+    RatingCallQuality
 
 router = APIRouter(prefix="/video-call", tags=['Video Call'])
 
@@ -22,6 +24,7 @@ async def accept_video_call_endpoint(data: VideoCallAccept, db: Session = Depend
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/add-participant")
 async def add_video_call_participant_endpoint(data: VideoCallParticipantAdd, db: Session = Depends(database.get_db)):
     try:
@@ -32,6 +35,7 @@ async def add_video_call_participant_endpoint(data: VideoCallParticipantAdd, db:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/end-call")
 async def end_call_endpoint(data: EndCallRequest, db: Session = Depends(database.get_db)):
     try:
@@ -41,3 +45,11 @@ async def end_call_endpoint(data: EndCallRequest, db: Session = Depends(database
         return {"message": "Call ended successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/rate-call-quality/{video_call_id}/{user_id}", response_model=str)
+def rate_call_quality_endpoint(video_call_id: int, user_id: int, quality: RatingCallQuality, db: Session = Depends(database.get_db)):
+    success, message = rate_call_quality(db, video_call_id, user_id, quality.call_quality)
+    if not success:
+        raise HTTPException(status_code=404, detail="Video call or user not found")
+    return message

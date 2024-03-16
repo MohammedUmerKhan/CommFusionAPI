@@ -15,3 +15,5 @@ class VideoCallParticipantAdd(BaseModel):
 class EndCallRequest(BaseModel):
     video_call_id: int
     user_id: int
+class RatingCallQuality(BaseModel):
+    call_quality: int

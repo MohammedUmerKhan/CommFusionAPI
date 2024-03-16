@@ -50,3 +50,14 @@ def accept_video_call(db: Session, video_call_id: int, user_id: int):
 
     db.commit()
     return True
+
+def add_video_call_participant(db: Session, video_call_id: int, user_id: int):
+    # Create a new participant record
+    participant = VideoCallParticipants(
+        UserId=user_id,
+        VideoCallId=video_call_id,
+        isCaller=0  # Participant, not the caller
+    )
+    db.add(participant)
+    db.commit()
+    return True

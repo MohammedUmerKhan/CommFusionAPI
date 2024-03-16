@@ -7,3 +7,7 @@ class VideoCallStart(BaseModel):
 class VideoCallAccept(BaseModel):
     video_call_id: int
     user_id: int
+
+class VideoCallParticipantAdd(BaseModel):
+    video_call_id: int
+    user_id: int

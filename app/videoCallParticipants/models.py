@@ -9,8 +9,10 @@ class VideoCallParticipants(Base):
     __tablename__ = 'VideoCallParticipants'
     UserId = Column(Integer, ForeignKey('User.Id'),primary_key=True, nullable=False)
     VideoCallId = Column(Integer, ForeignKey('VideoCall.Id'), primary_key=True, nullable=False)
-    CallQuality = Column(Integer, nullable=False)
-    isCaller = Column(DATETIME, nullable=False)
+    AcceptTime = Column(DATETIME, nullable=True)
+    EndTime = Column(DATETIME, nullable=True)
+    CallQuality = Column(Integer, nullable=True)
+    isCaller = Column(Integer, nullable=False)
 
     # Relationships
     VCP_user = relationship("User", back_populates="user_VPC")

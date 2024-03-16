@@ -7,3 +7,7 @@ class CustomSignDetails(BaseModel):
     status: str
     definition: str
     pictures: List[str]
+
+class CustomSignCreate(BaseModel):
+    definition: str
+    status: str = "Pending"

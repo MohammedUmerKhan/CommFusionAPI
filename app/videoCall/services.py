@@ -3,9 +3,10 @@ from app.videoCall.models import VideoCall
 from app.videoCallParticipants.models import  VideoCallParticipants
 from app.videoCall.schemas import VideoCallStart
 from app.user.models import User
+from app.transcriptSegment.models import TranscriptSegment
 from fastapi import HTTPException
 from datetime import datetime
-
+from typing import List
 def start_video_call(db: Session, video_call_data: VideoCallStart):
     try:
         # Create a new video call
@@ -112,4 +113,38 @@ def rate_call_quality(db: Session, video_call_id: int, user_id: int, call_qualit
         return True, "Thanks for rating!"
     except Exception as e:
         db.rollback()
+        raise e
+def get_transcript(db: Session, user_id: int, video_call_id: int) -> List[TranscriptSegment]:
+    try:
+        # Fetch the accept time and end time of the video call for the user
+        participant = db.query(VideoCallParticipants).filter(
+            VideoCallParticipants.VideoCallId == video_call_id,
+            VideoCallParticipants.UserId == user_id
+        ).first()
+
+        if not participant:
+            raise HTTPException(status_code=404, detail="User not found in the video call participants")
+
+        accept_time = participant.AcceptTime
+        end_time = participant.EndTime
+
+        # Fetch the transcript segments within the accept time and end time
+        user_segments = db.query(TranscriptSegment, User.Fname, User.Lname).join(
+            User, TranscriptSegment.UserId == User.Id
+        ).filter(
+            TranscriptSegment.VideoCallId == video_call_id,
+            # TranscriptSegment.UserId == user_id,
+            TranscriptSegment.StartTime >= accept_time,
+            TranscriptSegment.EndTime <= end_time
+        ).all()
+
+        transcript_data = []
+        for segment, fname, lname in user_segments:
+            fullname = f"{fname} {lname}"
+            segment_dict = segment.__dict__
+            segment_dict["Fullname"] = fullname
+            transcript_data.append(segment_dict)
+
+        return transcript_data
+    except Exception as e:
         raise e

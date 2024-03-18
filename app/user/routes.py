@@ -1,4 +1,7 @@
+import os
+
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Path
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.db import database
 from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile
@@ -38,7 +41,7 @@ def login_user(login_data: UserLogin, db: Session = Depends(database.get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     # You can return a token here for authentication purposes
-    return {"message": "Login successful", "user_id": user.Id}
+    return {"message": "Login successful", "user_id": user.Id,"username": user.Username}
 
 
 @router.post("/signup")
@@ -52,6 +55,15 @@ def signup_user_route(id: int, profile_picture: UploadFile = File(...), db: Sess
 @router.put("/update-profile")
 def update_user_profile_route(data: UpdateUserProfile, db: Session = Depends(database.get_db)):
     return update_user_profile(db, data)
+
+
+@router.get("/images/profile/{image_name}")
+async def get_profile_picture(image_name: str):
+
+    image_path = os.path.join(os.path.dirname(__file__),"images/profile/", image_name)
+    print("path: ",image_path)
+    # Return the image file using FileResponse
+    return FileResponse(image_path)
 
 @router.put("/{user_id}/online-status")
 def update_user_online_status_route(user_id: int, online_status: int, db: Session = Depends(database.get_db)):

@@ -26,6 +26,7 @@ from app.gesture.routes import router as gesture_router
 from app.userTakesLesson.routes import router as userTakesLesson_router
 from app.videoCall.routes import router as videoCall_router
 from app.transcriptFeedback.routes import router as transcriptFeedback_router
+from app.transcriptSegment.routes import router as transcriptSegment_router
 
 
 import uvicorn
@@ -44,6 +45,7 @@ app.include_router(gesture_router)
 app.include_router(userTakesLesson_router)
 app.include_router(videoCall_router)
 app.include_router(transcriptFeedback_router)
+app.include_router(transcriptSegment_router)
 #
 # @app.get('/checkDatabase')
 # def index():

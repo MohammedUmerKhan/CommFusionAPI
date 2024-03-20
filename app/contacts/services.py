@@ -51,3 +51,16 @@ def add_contact(db: Session, request: AddContactRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+def get_online_contacts(db: Session, user_id: int):
+    try:
+        online_contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
+                     .join(Contacts, User.Id == Contacts.ContactId) \
+                     .filter(Contacts.UserId == user_id, User.OnlineStatus == 1).all()
+
+        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status)
+                         for fname, lname,profile_picture, account_status, bio_status, online_status  in online_contacts]
+
+        return contacts_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

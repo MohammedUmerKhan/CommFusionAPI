@@ -77,6 +77,7 @@ class UpdateUserProfile(BaseModel):
 class UserOnlineStatusUpdate(BaseModel):
     online_status: int
 
+
 class UserProfile(BaseModel):
     user_id: int
     profile_picture: str

@@ -12,7 +12,6 @@ from app.user.schemas import UserLogin, UserSearchResult, UpdateUserProfile
 from app.user.schemas import UserSignup
 
 
-
 def get_users(db: Session):
     return db.query(User).all()
 
@@ -131,6 +130,30 @@ def search_user(db: Session, user_id: int, search_username: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def search_user_by_email(db: Session, user_id: int, email: str):
+    try:
+        user = db.query(User).filter(User.Email == email).first()
+        if not user:
+            return {"message": "User not found"}, 404
+
+        friend = db.query(Contacts).filter(Contacts.UserId == user_id, Contacts.ContactId == user.Id).first()
+
+        is_friend = friend is not None  # Check if friend exists
+
+        result = {
+            'user_id': user.Id,
+            'username': user.Username,
+            'fname': user.Fname,
+            'lname': user.Lname,
+            'account_status': user.AccountStatus,
+            'is_friend': is_friend
+        }
+
+        return result
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 def update_user_profile(db: Session, data: UpdateUserProfile):
     try:
         # Retrieve the user
@@ -186,6 +209,7 @@ def update_user_online_status(db: Session, user_id: int, online_status: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
+
 def update_user_account_status_to_deleted(db: Session, user_id: int):
     try:
         # Fetch the user by id
@@ -202,6 +226,7 @@ def update_user_account_status_to_deleted(db: Session, user_id: int):
         return {"message": "User account status updated to 'Deleted' successfully", "Id": user.Id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
 
 def get_user_profile(db: Session, user_id: int):
     user = db.query(User).filter(User.Id == user_id).first()

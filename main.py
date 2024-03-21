@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from app.db import Database
 from app.user import models as user
 from app.contacts import models as contacts
@@ -27,17 +26,10 @@ from app.gesture.routes import router as gesture_router
 from app.userTakesLesson.routes import router as userTakesLesson_router
 from app.videoCall.routes import router as videoCall_router
 from app.transcriptFeedback.routes import router as transcriptFeedback_router
-from app.transcriptSegment.routes import router as transcriptSegment_router
 
 
 import uvicorn
 app = FastAPI()
-# Define the directory where profile pictures are stored
-PROFILE_PICTURES_DIR = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\
-\profile"
-
-# Mount the directory as a route for serving static files
-app.mount("/profile_pictures", StaticFiles(directory=PROFILE_PICTURES_DIR), name="profile_pictures")
 
 # Mount routers
 app.include_router(users_router)
@@ -52,7 +44,10 @@ app.include_router(gesture_router)
 app.include_router(userTakesLesson_router)
 app.include_router(videoCall_router)
 app.include_router(transcriptFeedback_router)
-app.include_router(transcriptSegment_router)
 
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    import socket
+    ip = socket.gethostbyname(socket.gethostname())  # Get the IP address of the server
+    uvicorn.run(app, host=ip, port=8000)

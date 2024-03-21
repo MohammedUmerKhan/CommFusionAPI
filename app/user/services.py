@@ -18,6 +18,7 @@ def get_users(db: Session):
 
 
 def authenticate_user(db: Session, login_data: UserLogin):
+
     user = db.query(User).filter(User.Email == login_data.email).first()
     if user and user.Password == login_data.password:
         return user
@@ -63,7 +64,8 @@ def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile)
             return {"message": "User not found"}
 
         # Define the directory where images will be saved
-        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\\profile"
+        image_dir = os.path.join(os.path.dirname(__file__), 'images', 'profile/')
+        print("new path : "+image_dir)
         # Create the directory if it doesn't exist
         os.makedirs(image_dir, exist_ok=True)
 
@@ -73,10 +75,11 @@ def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile)
 
         # Write the file to disk
         with open(file_path, "wb") as f:
+            print("\nwriting: "+(file_path))
             f.write(profile_picture.file.read())
 
         # Update the ProfilePicture attribute in the user model
-        user.ProfilePicture = file_path
+        user.ProfilePicture = "/user/images/profile/"+unique_filename
 
         # Commit the changes to the database
         db.commit()
@@ -202,14 +205,3 @@ def update_user_account_status_to_deleted(db: Session, user_id: int):
         return {"message": "User account status updated to 'Deleted' successfully", "Id": user.Id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-
-def get_user_profile(db: Session, user_id: int):
-    user = db.query(User).filter(User.Id == user_id).first()
-    if not user:
-        return None
-
-    user_profile = {
-        "user_id": user.Id,
-        "profile_picture": user.ProfilePicture,
-    }
-    return user_profile

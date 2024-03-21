@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Path
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from app.db import database
-from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile
+from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile, UserProfile
 from app.user.services import authenticate_user, get_users, signup_user, uploadprofilepicture_user, get_user_details, \
-    search_user, update_user_profile,update_user_online_status, update_user_account_status_to_deleted
+    search_user, update_user_profile,update_user_online_status, update_user_account_status_to_deleted,get_user_profile
 from typing import List
 
 router = APIRouter(prefix="/user", tags=['User'])
@@ -61,3 +61,10 @@ def update_user_online_status_route(user_id: int, online_status: int, db: Sessio
 @router.put("/{user_id}/delete")
 def update_user_account_status_to_deleted_route(user_id: int, db: Session = Depends(database.get_db)):
     return update_user_account_status_to_deleted(db, user_id)
+
+@router.get("/profile/{user_id}", response_model=UserProfile)
+def get_user_profile_route(user_id: int, db: Session = Depends(database.get_db)):
+    user_profile = get_user_profile(db, user_id)
+    if not user_profile:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    return user_profile

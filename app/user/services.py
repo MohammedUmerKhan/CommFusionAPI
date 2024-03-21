@@ -202,3 +202,14 @@ def update_user_account_status_to_deleted(db: Session, user_id: int):
         return {"message": "User account status updated to 'Deleted' successfully", "Id": user.Id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+def get_user_profile(db: Session, user_id: int):
+    user = db.query(User).filter(User.Id == user_id).first()
+    if not user:
+        return None
+
+    user_profile = {
+        "user_id": user.Id,
+        "profile_picture": user.ProfilePicture,
+    }
+    return user_profile

@@ -56,7 +56,7 @@ def signup_user_route(id: int, profile_picture: UploadFile = File(...), db: Sess
 def update_user_profile_route(data: UpdateUserProfile, db: Session = Depends(database.get_db)):
     return update_user_profile(db, data)
 
-
+#for img accessing
 @router.get("/images/profile/{image_name}")
 async def get_profile_picture(image_name: str):
 

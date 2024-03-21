@@ -114,7 +114,7 @@ def search_user(db: Session, user_id: int, search_username: str):
     try:
         user = db.query(User).filter(User.Username == search_username).first()
         if not user:
-            return {"message": "User not found"}, 404
+            return {"message": "username User not found"}, 404
 
         friend = db.query(Contacts).filter(Contacts.UserId == user_id, Contacts.ContactId == user.Id).first()
 
@@ -132,6 +132,31 @@ def search_user(db: Session, user_id: int, search_username: str):
         return result
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+def search_email(db: Session, user_id: int, search_Email: str):
+    try:
+        print("email : ", search_Email)
+        user = db.query(User).filter(User.Email == search_Email).first()
+        if not user:
+            return {"message": " email User not found"}, 404
+
+        friend = db.query(Contacts).filter(Contacts.UserId == user_id, Contacts.ContactId == user.Id).first()
+
+        is_friend = friend is not None  # Check if friend exists
+
+        result = {
+            'user_id': user.Id,
+            'username': user.Username,
+            'fname': user.Fname,
+            'lname': user.Lname,
+            'account_status': user.AccountStatus,
+            'is_friend': is_friend
+        }
+
+        return result
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 def update_user_profile(db: Session, data: UpdateUserProfile):

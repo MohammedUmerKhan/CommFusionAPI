@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.db import database
 from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile
 from app.user.services import authenticate_user, get_users, signup_user, uploadprofilepicture_user, get_user_details, \
-    search_user, update_user_profile,update_user_online_status, update_user_account_status_to_deleted
+    search_user, update_user_profile, update_user_online_status, update_user_account_status_to_deleted, search_email
 from typing import List
 
 router = APIRouter(prefix="/user", tags=['User'])
@@ -23,7 +23,12 @@ def get_all_users(db: Session = Depends(database.get_db)):
 
 
 @router.get("/search")
-def search_user_route(user_id: int, search_username: str, db: Session = Depends(database.get_db)):
+def search_user_route(user_id: int, search_username: str, search_Email: str,db: Session = Depends(database.get_db)):
+    if search_username != " ":
+        return search_user(db, user_id, search_username)
+    else :
+        return search_email(db, user_id, search_Email)
+
     return search_user(db, user_id, search_username)
 
 

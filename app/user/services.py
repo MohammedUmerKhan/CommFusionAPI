@@ -126,7 +126,9 @@ def search_user(db: Session, user_id: int, search_username: str):
             'fname': user.Fname,
             'lname': user.Lname,
             'account_status': user.AccountStatus,
-            'is_friend': is_friend
+            'profile_picture': user.ProfilePicture,
+            'is_friend': is_friend,
+            'bio_status': user.BioStatus
         }
 
         return result
@@ -150,7 +152,9 @@ def search_email(db: Session, user_id: int, search_Email: str):
             'fname': user.Fname,
             'lname': user.Lname,
             'account_status': user.AccountStatus,
-            'is_friend': is_friend
+            'profile_picture': user.ProfilePicture,
+            'is_friend': is_friend,
+             'bio_status': user.BioStatus
         }
 
         return result

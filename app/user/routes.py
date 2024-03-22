@@ -23,8 +23,8 @@ def get_all_users(db: Session = Depends(database.get_db)):
 
 
 @router.get("/search")
-def search_user_route(user_id: int, search_username: str, search_Email: str,db: Session = Depends(database.get_db)):
-    if search_username != " ":
+def search_user_route(user_id: int, search_username: str = None, search_Email: str = None,db: Session = Depends(database.get_db)):
+    if search_username != None:
         return search_user(db, user_id, search_username)
     else :
         return search_email(db, user_id, search_Email)

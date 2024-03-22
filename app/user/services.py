@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+
 from fastapi import UploadFile, HTTPException
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.user.models import User
 from app.contacts.models import Contacts
-from app.user.schemas import UserLogin, UserSearchResult, UpdateUserProfile
+from app.user.schemas import UserLogin,  UpdateUserProfile
 from app.user.schemas import UserSignup
 
 
@@ -122,7 +122,8 @@ def search_user(db: Session, user_id: int, search_username: str):
             'fname': user.Fname,
             'lname': user.Lname,
             'account_status': user.AccountStatus,
-            'is_friend': is_friend
+            'is_friend': is_friend,
+            'profile_picture': user.ProfilePicture
         }
 
         return result
@@ -146,7 +147,8 @@ def search_user_by_email(db: Session, user_id: int, email: str):
             'fname': user.Fname,
             'lname': user.Lname,
             'account_status': user.AccountStatus,
-            'is_friend': is_friend
+            'is_friend': is_friend,
+            'profile_picture': user.ProfilePicture
         }
 
         return result

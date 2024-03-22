@@ -20,8 +20,8 @@ def get_all_users(db: Session = Depends(database.get_db)):
     return get_users(db)
 
 
-@router.get("/search")
-def search_user_route(user_id: int, search_username: str, db: Session = Depends(database.get_db)):
+@router.get("/search-by-username")
+def search_user_by_username_route(user_id: int, search_username: str, db: Session = Depends(database.get_db)):
     return search_user(db, user_id, search_username)
 
 

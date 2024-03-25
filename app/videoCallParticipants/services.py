@@ -58,7 +58,7 @@ def get_user_calls(db: Session, user_id: int):
             "StartTime": row[8]
         } for row in user_calls]
 
-        return {"user_calls": user_calls}, 200
+        return user_calls
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

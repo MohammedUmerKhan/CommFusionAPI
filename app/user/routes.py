@@ -62,13 +62,22 @@ def update_user_profile_route(data: UpdateUserProfile, db: Session = Depends(dat
     return update_user_profile(db, data)
 
 #for img accessing
+from fastapi import HTTPException
+
+from fastapi import HTTPException
+
+#for img accessing
 @router.get("/images/profile/{image_name}")
 async def get_profile_picture(image_name: str):
+    try:
+        image_path = os.path.join("/Users/umerfarooq/Documents/GitHub/CommFusionAPI/app/", "images/profile", image_name)
+        if not os.path.isfile(image_path):
+            raise HTTPException(status_code=404, detail="Image not found")
+        return FileResponse(image_path)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
-    image_path = os.path.join(os.path.dirname(__file__),"images/profile/", image_name)
-    print("path: ",image_path)
-    # Return the image file using FileResponse
-    return FileResponse(image_path)
 
 @router.put("/{user_id}/online-status")
 def update_user_online_status_route(user_id: int, online_status: int, db: Session = Depends(database.get_db)):

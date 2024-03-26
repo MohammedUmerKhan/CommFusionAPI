@@ -8,6 +8,7 @@ class UserContact(BaseModel):
     account_status: str
     bio_status: str
     online_status: int
+    user_id: int
 
 
 class Contacts(BaseModel):

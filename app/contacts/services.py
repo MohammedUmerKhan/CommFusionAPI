@@ -13,12 +13,12 @@ def get_contacts(db: Session):
 
 def get_all_user_contacts(db: Session, user_id: int):
     try:
-        contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
+        contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus,User.Id) \
                      .join(Contacts, User.Id == Contacts.ContactId) \
                      .filter(Contacts.UserId == user_id).all()
 
-        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status)
-                         for fname, lname,profile_picture, account_status, bio_status, online_status  in contacts]
+        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status, user_id=user_id)
+                         for fname, lname,profile_picture, account_status, bio_status, online_status, user_id  in contacts]
 
         return contacts_data
     except Exception as e:
@@ -54,12 +54,12 @@ def add_contact(db: Session, request: AddContactRequest):
 
 def get_online_contacts(db: Session, user_id: int):
     try:
-        online_contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
+        online_contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus,User.Id) \
                      .join(Contacts, User.Id == Contacts.ContactId) \
                      .filter(Contacts.UserId == user_id, User.OnlineStatus == 1).all()
 
-        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status)
-                         for fname, lname,profile_picture, account_status, bio_status, online_status  in online_contacts]
+        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status, user_id=user_id)
+                         for fname, lname,profile_picture, account_status, bio_status, online_status, user_id in online_contacts]
 
         return contacts_data
     except Exception as e:

@@ -33,8 +33,7 @@ from app.transcriptSegment.routes import router as transcriptSegment_router
 import uvicorn
 app = FastAPI()
 # Define the directory where profile pictures are stored
-PROFILE_PICTURES_DIR = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\
-\profile"
+PROFILE_PICTURES_DIR = "app/assets/images/profile"
 
 # Mount the directory as a route for serving static files
 app.mount("/profile_pictures", StaticFiles(directory=PROFILE_PICTURES_DIR), name="profile_pictures")

@@ -17,7 +17,7 @@ def upload_custom_sign_picture(db: Session, custom_sign_id: int, files: List[Upl
             raise HTTPException(status_code=404, detail="CustomSign not found")
 
         # Define the directory where images will be saved
-        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\\customSign"
+        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\assets\\images\\customSign"
         os.makedirs(image_dir, exist_ok=True)
 
         # Iterate over each uploaded file

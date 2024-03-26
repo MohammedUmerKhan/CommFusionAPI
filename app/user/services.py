@@ -62,7 +62,7 @@ def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile)
             return {"message": "User not found"}
 
         # Define the directory where images will be saved
-        image_dir = "C:\\Users\\dell\\PycharmProjects\\CommFusionAPI\\app\\images\\profile"
+        image_dir = "app/assets/images/profile/"
         # Create the directory if it doesn't exist
         os.makedirs(image_dir, exist_ok=True)
 

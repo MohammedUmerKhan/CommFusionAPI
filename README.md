@@ -18,7 +18,13 @@ pip3 install -r requirements.txt
 ```
 ## Explore it 
 
-Explore it and twist it to your own use case. In case of any questions feel free to reach me..
+Explore it and twist it to your own use case. In case of any questions feel free to reach me.
+
+## Entity–relationship model
+
+This ERD (Entity-Relationship Diagram) represents the project.
+
+![Screenshot of ERD Diagram](app/assets/images/other/erd.png)
 
 ## Issues
 

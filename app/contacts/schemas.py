@@ -9,6 +9,7 @@ class UserContact(BaseModel):
     bio_status: str
     online_status: int
     user_id: int
+    user_name: str
 
 
 class Contacts(BaseModel):

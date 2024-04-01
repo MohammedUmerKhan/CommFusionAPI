@@ -1,3 +1,5 @@
+import netifaces
+import uvicorn
 from fastapi import FastAPI
 from app.db import Database
 from app.user import models as user
@@ -27,8 +29,6 @@ from app.userTakesLesson.routes import router as userTakesLesson_router
 from app.videoCall.routes import router as videoCall_router
 from app.transcriptFeedback.routes import router as transcriptFeedback_router
 
-
-import uvicorn
 app = FastAPI()
 
 # Mount routers
@@ -45,9 +45,17 @@ app.include_router(userTakesLesson_router)
 app.include_router(videoCall_router)
 app.include_router(transcriptFeedback_router)
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
 if __name__ == "__main__":
-    import socket
-    ip = socket.gethostbyname(socket.gethostname())  # Get the IP address of the server
+    # Get the private IP address of the server
+    interfaces = netifaces.interfaces()
+    for interface in interfaces:
+        try:
+            addresses = netifaces.ifaddresses(interface)
+            ip = addresses[netifaces.AF_INET][0]['addr']
+            if ip != '127.0.0.1':  # Skip loopback address
+                break
+        except KeyError:
+            continue
+
+    print("IP is:", ip)
     uvicorn.run(app, host=ip, port=8000)

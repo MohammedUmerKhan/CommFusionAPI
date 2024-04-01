@@ -59,7 +59,7 @@ def get_online_contacts(db: Session, user_id: int):
                      .filter(Contacts.UserId == user_id, User.OnlineStatus == 1).all()
 
         contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status, user_id=user_id, user_name = user_name)
-                         for fname, lname,profile_picture, account_status, bio_status, online_status, user_id,user_name in online_contacts]
+                         for fname, lname,profile_picture, account_status, bio_status, online_status, user_id,user_name12345678 in online_contacts]
 
         return contacts_data
     except Exception as e:

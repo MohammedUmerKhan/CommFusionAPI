@@ -1,6 +1,6 @@
 import os
 import uuid
-
+from datetime import date
 from fastapi import UploadFile, HTTPException
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -22,15 +22,32 @@ def authenticate_user(db: Session, login_data: UserLogin):
         return user
     return None
 
-
 def signup_user(db: Session, signup_data: UserSignup):
+    # Check if the email address is already registered
+    email_exists = db.query(User).filter(User.Email == signup_data.email).first()
+    if email_exists:
+        raise HTTPException(status_code=400, detail="Email is already registered")
+
     # Create username based on fname and lname
-    username = signup_data.fname.lower() + signup_data.lname.lower()
+    base_username = signup_data.fname.lower() + signup_data.lname.lower()
+    username = base_username
+    username_exists = db.query(User).filter(User.Username == username).first()
+
+    # If the username already exists, append a number until it becomes unique
+    counter = 1
+    while username_exists:
+        username = f"{base_username}{counter}"
+        username_exists = db.query(User).filter(User.Username == username).first()
+        counter += 1
+
     # Formulate bio_status
     bio_status = f"Hello, I am {signup_data.fname} {signup_data.lname}"
     # Get current date as registration date
     registration_date = datetime.now().date()
+# Set default values for account_status, registration_date, and online_status
+    account_status = "Active"
 
+    online_status = 23  # Default value
     # Create user instance
     user = User(
         Username=username,
@@ -41,10 +58,10 @@ def signup_user(db: Session, signup_data: UserSignup):
         DisabilityType=signup_data.disability_type,
         Fname=signup_data.fname,
         Lname=signup_data.lname,
-        AccountStatus=signup_data.account_status,
+        AccountStatus=account_status,
         BioStatus=bio_status,
         RegistrationDate=registration_date,
-        OnlineStatus=signup_data.online_status
+        OnlineStatus=online_status
     )
 
     # Add user to database
@@ -52,6 +69,7 @@ def signup_user(db: Session, signup_data: UserSignup):
     db.commit()
     db.refresh(user)
     return {"message": "User successfully created", "Id": user.Id}
+
 
 
 def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile):

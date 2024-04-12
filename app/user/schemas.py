@@ -35,10 +35,10 @@ class UserSignup(BaseModel):
     password: str
     email: str
     disability_type: str
-    account_status: str = "Active"  # Default value
+    # account_status: str = "Active"  # Default value
     bio_status: str = ""
-    registration_date: date  # Automatically generated
-    online_status: int = 1  # Default value
+    # registration_date: date  # Automatically generated
+    # online_status: int = 1  # Default value
 
 
 class UserDetails(BaseModel):

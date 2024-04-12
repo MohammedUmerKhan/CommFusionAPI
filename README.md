@@ -9,6 +9,11 @@ To get started with the code on this repo, you need to either clone or download 
 ```bash
 git clone https://github.com/MohammedUmerKhan/CommFusionAPI.git
 ```
+## To Run 
+Locally
+```bash
+uvicorn main:app --reload --host 0.0.0.0
+```
 ## Dependencies
 
 Before you begin playing with the source code, you might need to install dependencies just as shown below;

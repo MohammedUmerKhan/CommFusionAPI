@@ -40,14 +40,14 @@ def signup_user(db: Session, signup_data: UserSignup):
         username_exists = db.query(User).filter(User.Username == username).first()
         counter += 1
 
-    # Formulate bio_status
-    bio_status = f"Hello, I am {signup_data.fname} {signup_data.lname}"
+    # # Formulate bio_status
+    # bio_status = f"Hello, I am {signup_data.fname} {signup_data.lname}"
     # Get current date as registration date
     registration_date = datetime.now().date()
 # Set default values for account_status, registration_date, and online_status
     account_status = "Active"
 
-    online_status = 23  # Default value
+    online_status = 1  # Default value
     # Create user instance
     user = User(
         Username=username,
@@ -59,7 +59,7 @@ def signup_user(db: Session, signup_data: UserSignup):
         Fname=signup_data.fname,
         Lname=signup_data.lname,
         AccountStatus=account_status,
-        BioStatus=bio_status,
+        BioStatus=signup_data.bio_status,
         RegistrationDate=registration_date,
         OnlineStatus=online_status
     )

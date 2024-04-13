@@ -49,7 +49,7 @@ def login_user(login_data: UserLogin, db: Session = Depends(database.get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     # You can return a token here for authentication purposes
-    return {"message": "Login successful", "user_id": user.Id}
+    return {"message": "Login successful", "user": user}
 
 
 @router.post("/signup")

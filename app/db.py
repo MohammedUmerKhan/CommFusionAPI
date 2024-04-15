@@ -30,4 +30,4 @@ class Database:
             db.close()
 
 # Initialize the database object here
-database = Database(server='DESKTOP-Q411CKI\SQLEXPRESS', database='CommFusionDB', trusted_connection=True)
+database = Database(server='UMER-KHAN\SQLEXPRESS', database='CommFusionDB', trusted_connection=True)

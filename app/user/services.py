@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.user.models import User
 from app.contacts.models import Contacts
-from app.user.schemas import UserLogin,  UpdateUserProfile
+from app.user.schemas import UserLogin, UpdateUserProfile, UpdateBioStatus,UserDetails
 from app.user.schemas import UserSignup
 
 
@@ -21,6 +21,7 @@ def authenticate_user(db: Session, login_data: UserLogin):
     if user and user.Password == login_data.password:
         return user
     return None
+
 
 def signup_user(db: Session, signup_data: UserSignup):
     # Check if the email address is already registered
@@ -44,7 +45,7 @@ def signup_user(db: Session, signup_data: UserSignup):
     # bio_status = f"Hello, I am {signup_data.fname} {signup_data.lname}"
     # Get current date as registration date
     registration_date = datetime.now().date()
-# Set default values for account_status, registration_date, and online_status
+    # Set default values for account_status, registration_date, and online_status
     account_status = "Active"
 
     online_status = 1  # Default value
@@ -69,7 +70,6 @@ def signup_user(db: Session, signup_data: UserSignup):
     db.commit()
     db.refresh(user)
     return {"message": "User successfully created", "Id": user.Id}
-
 
 
 def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile):
@@ -108,21 +108,21 @@ def get_user_details(db: Session, user_id: int):
     if not user:
         return None
 
-    user_details = {
-        "fname": user.Fname,
-        "lname": user.Lname,
-        "DateOfBirth": user.DateOfBirth,
-        "password": user.Password,
-        "profile_picture": user.ProfilePicture,
-        "email": user.Email,
-        "disability_type": user.DisabilityType,
-        "account_status": user.AccountStatus,
-        "bio_status": user.BioStatus,
-        "registration_date": user.RegistrationDate,
-        "online_status": user.OnlineStatus
-    }
-    return user_details
-
+    return UserDetails(
+        Id=user.Id,
+        username=user.Username,
+        fname=user.Fname,
+        lname=user.Lname,
+        DateOfBirth=user.DateOfBirth,
+        password=user.Password,
+        profile_picture=user.ProfilePicture,
+        email=user.Email,
+        disability_type=user.DisabilityType,
+        account_status=user.AccountStatus,
+        bio_status=user.BioStatus,
+        registration_date=user.RegistrationDate,
+        online_status=user.OnlineStatus
+    )
 
 def search_user(db: Session, user_id: int, search_username: str):
     try:
@@ -258,3 +258,22 @@ def get_user_profile(db: Session, user_id: int):
         "profile_picture": user.ProfilePicture,
     }
     return user_profile
+
+
+def update_user_bio_status(db: Session, data: UpdateBioStatus):
+    # Get the user by user_id
+    user = db.query(User).filter(User.Id == data.user_id).first()
+    if not user:
+        return {"message": "User not found"}
+
+    # If bio_status is empty, set it to the default value
+    if not data.bio_status:
+        default_bio_status = "Hi, I am using CommFusion"
+        user.BioStatus = default_bio_status
+        db.commit()
+        return {"message": "Default bio status set successfully", "default_bio_status": default_bio_status}
+    else:
+        # Update the bio status with the provided value
+        user.BioStatus = data.bio_status
+        db.commit()
+        return {"message": "Bio status added successfully"}

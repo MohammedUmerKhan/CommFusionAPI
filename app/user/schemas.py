@@ -42,6 +42,8 @@ class UserSignup(BaseModel):
 
 
 class UserDetails(BaseModel):
+    Id: int
+    username: str
     fname: str
     lname: str
     DateOfBirth: date
@@ -81,3 +83,7 @@ class UserOnlineStatusUpdate(BaseModel):
 class UserProfile(BaseModel):
     user_id: int
     profile_picture: str
+
+class UpdateBioStatus(BaseModel):
+    user_id: int
+    bio_status: str = ""

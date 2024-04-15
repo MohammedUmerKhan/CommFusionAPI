@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from app.db import database
-from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile, UserProfile
+from app.user.schemas import UserLogin, User, UserSignup, UserDetails, UpdateUserProfile, UserProfile, UpdateBioStatus
 from app.user.services import authenticate_user, get_users, signup_user, uploadprofilepicture_user, get_user_details, \
     search_user, update_user_profile, update_user_online_status, update_user_account_status_to_deleted, \
-    get_user_profile, search_user_by_email
+    get_user_profile, search_user_by_email,update_user_bio_status
 from typing import List
 
 router = APIRouter(prefix="/user", tags=['User'])
@@ -42,14 +42,32 @@ def get_user_by_id(user_id: int, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user_details
 
-
-@router.post("/login")
+# This returns user
+@router.post("/login", response_model=UserDetails)
 def login_user(login_data: UserLogin, db: Session = Depends(database.get_db)):
     user = authenticate_user(db, login_data)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
-    # You can return a token here for authentication purposes
-    return {"message": "Login successful", "user": user}
+
+    # Generate or retrieve the username based on your application logic
+    username = user.Username  # Assuming Username is the field for username in your User model
+
+    user_details = UserDetails(
+        Id=user.Id,
+        username=username,
+        fname=user.Fname,
+        lname=user.Lname,
+        DateOfBirth=user.DateOfBirth,
+        password=user.Password,
+        profile_picture=user.ProfilePicture,
+        email=user.Email,
+        disability_type=user.DisabilityType,
+        account_status=user.AccountStatus,
+        bio_status=user.BioStatus,
+        registration_date=user.RegistrationDate,
+        online_status=user.OnlineStatus
+    )
+    return user_details
 
 
 @router.post("/signup")
@@ -83,3 +101,7 @@ def get_user_profile_route(user_id: int, db: Session = Depends(database.get_db))
     if not user_profile:
         raise HTTPException(status_code=404, detail="User profile not found")
     return user_profile
+
+@router.put("/update-bio-status")
+def update_bio_status_route(data: UpdateBioStatus, db: Session = Depends(database.get_db)):
+    return update_user_bio_status(db, data)

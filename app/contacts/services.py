@@ -4,6 +4,7 @@ from app.contacts.models import Contacts
 from app.contacts.schemas import UserContact, AddContactRequest
 from fastapi import HTTPException
 
+
 def get_contacts(db: Session):
     try:
         return db.query(Contacts).all()
@@ -11,14 +12,21 @@ def get_contacts(db: Session):
         print(f"An error occurred: {e}")
         return []
 
+
 def get_all_user_contacts(db: Session, user_id: int):
     try:
-        contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
-                     .join(Contacts, User.Id == Contacts.ContactId) \
-                     .filter(Contacts.UserId == user_id).all()
+        contacts = db.query(User.Id, User.Fname, User.Lname, User.Username, User.DisabilityType, User.ProfilePicture,
+                            User.AccountStatus, User.BioStatus, User.OnlineStatus) \
+            .join(Contacts, User.Id == Contacts.ContactId) \
+            .filter(Contacts.UserId == user_id).all()
 
-        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status)
-                         for fname, lname,profile_picture, account_status, bio_status, online_status  in contacts]
+        contacts_data = [
+            UserContact(user_id=user_id, fname=fname, lname=lname, username=username, disability_type=disability_type,
+                        profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,
+                        online_status=online_status)
+            for
+            user_id, fname, lname, username, disability_type, profile_picture, account_status, bio_status, online_status
+            in contacts]
 
         return contacts_data
     except Exception as e:
@@ -52,14 +60,21 @@ def add_contact(db: Session, request: AddContactRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 def get_online_contacts(db: Session, user_id: int):
     try:
-        online_contacts = db.query(User.Fname, User.Lname, User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
-                     .join(Contacts, User.Id == Contacts.ContactId) \
-                     .filter(Contacts.UserId == user_id, User.OnlineStatus == 1).all()
+        online_contacts = db.query(User.Id, User.Fname, User.Lname, User.Username, User.DisabilityType,
+                                   User.ProfilePicture, User.AccountStatus, User.BioStatus, User.OnlineStatus) \
+            .join(Contacts, User.Id == Contacts.ContactId) \
+            .filter(Contacts.UserId == user_id, User.OnlineStatus == 1).all()
 
-        contacts_data = [UserContact(fname=fname, lname=lname,  profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,online_status=online_status)
-                         for fname, lname,profile_picture, account_status, bio_status, online_status  in online_contacts]
+        contacts_data = [
+            UserContact(user_id=user_id, fname=fname, lname=lname, username=username, disability_type=disability_type,
+                        profile_picture=profile_picture, account_status=account_status, bio_status=bio_status,
+                        online_status=online_status)
+            for
+            user_id, fname, lname, username, disability_type, profile_picture, account_status, bio_status, online_status
+            in online_contacts]
 
         return contacts_data
     except Exception as e:

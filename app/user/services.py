@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.user.models import User
 from app.contacts.models import Contacts
-from app.user.schemas import UserLogin, UpdateUserProfile, UpdateBioStatus,UserDetails
+from app.user.schemas import UserLogin, UpdateUserProfile, UpdateBioStatus, UserDetails
 from app.user.schemas import UserSignup
 
 
@@ -86,14 +86,15 @@ def uploadprofilepicture_user(db: Session, id: int, profile_picture: UploadFile)
 
         # Generate a unique filename for the uploaded file
         unique_filename = f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        # Removed path now
         file_path = os.path.join(image_dir, unique_filename)
-
         # Write the file to disk
         with open(file_path, "wb") as f:
             f.write(profile_picture.file.read())
 
         # Update the ProfilePicture attribute in the user model
-        user.ProfilePicture = file_path
+        # user.ProfilePicture = file_path
+        user.ProfilePicture = unique_filename
 
         # Commit the changes to the database
         db.commit()
@@ -123,6 +124,7 @@ def get_user_details(db: Session, user_id: int):
         registration_date=user.RegistrationDate,
         online_status=user.OnlineStatus
     )
+
 
 def search_user(db: Session, user_id: int, search_username: str):
     try:

@@ -141,9 +141,12 @@ def search_user(db: Session, user_id: int, search_username: str):
             'username': user.Username,
             'fname': user.Fname,
             'lname': user.Lname,
+            'disability_type':user.DisabilityType,
+            'profile_picture': user.ProfilePicture,
             'account_status': user.AccountStatus,
+            'bio_status':user.BioStatus,
+            'online_status':user.OnlineStatus,
             'is_friend': is_friend,
-            'profile_picture': user.ProfilePicture
         }
 
         return result
@@ -166,9 +169,12 @@ def search_user_by_email(db: Session, user_id: int, email: str):
             'username': user.Username,
             'fname': user.Fname,
             'lname': user.Lname,
+            'disability_type':user.DisabilityType,
+            'profile_picture': user.ProfilePicture,
             'account_status': user.AccountStatus,
+            'bio_status':user.BioStatus,
+            'online_status':user.OnlineStatus,
             'is_friend': is_friend,
-            'profile_picture': user.ProfilePicture
         }
 
         return result

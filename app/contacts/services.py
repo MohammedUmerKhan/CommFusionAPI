@@ -53,6 +53,11 @@ def add_contact(db: Session, request: AddContactRequest):
         # Add the user as a contact for the other user
         contact = Contacts(UserId=request.user_id, ContactId=request.contact_id, IsBlocked=request.is_blocked)
         db.add(contact)
+
+        # Add bidirectional contact
+        reverse_contact = Contacts(UserId=request.contact_id, ContactId=request.user_id, IsBlocked=request.is_blocked)
+        db.add(reverse_contact)
+
         db.commit()
 
         return {"message": "User added as a contact successfully"}

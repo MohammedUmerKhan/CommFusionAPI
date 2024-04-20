@@ -130,7 +130,7 @@ def search_user(db: Session, user_id: int, search_username: str):
     try:
         user = db.query(User).filter(User.Username == search_username).first()
         if not user:
-            return {"message": "User not found"}, 404
+            raise HTTPException(status_code=404, detail="User not found")
 
         friend = db.query(Contacts).filter(Contacts.UserId == user_id, Contacts.ContactId == user.Id).first()
 
@@ -158,7 +158,7 @@ def search_user_by_email(db: Session, user_id: int, email: str):
     try:
         user = db.query(User).filter(User.Email == email).first()
         if not user:
-            return {"message": "User not found"}, 404
+            raise HTTPException(status_code=404, detail="User not found")
 
         friend = db.query(Contacts).filter(Contacts.UserId == user_id, Contacts.ContactId == user.Id).first()
 

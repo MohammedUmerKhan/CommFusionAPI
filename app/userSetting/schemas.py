@@ -12,8 +12,8 @@ class UpdateUserSettings(BaseModel):
     settings: Dict[str, str]
 
 class DefaultUserSettings(BaseModel):
-    TranscriptionFontSize: str = '12px'
-    TranscriptionOpacity: str = '0.8'
+    TranscriptionFontSize: str = '20'
+    TranscriptionOpacity: str = '5'
     TranscriptionColor: str = 'black'
     Notifications: str = 'Enabled'
-    Ringtone: str = 'default_ringtone.mp3'
+    Ringtone: str = 'Xylophone'

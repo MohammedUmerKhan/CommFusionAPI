@@ -15,7 +15,7 @@ def read_user_settings(user_id: int, db: Session = Depends(database.get_db)):
     return user_settings
 
 
-@router.put("/settings")
+@router.put("/settings", response_model=List[UserSettings])
 def update_user_setting(settings: UpdateUserSettings, db: Session = Depends(database.get_db)):
     response = update_user_settings(db, settings.user_id, settings.settings)
     if "error" in response:

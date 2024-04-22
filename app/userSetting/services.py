@@ -18,10 +18,14 @@ def get_user_settings(db: Session, user_id: int):
 
 def update_user_settings(db: Session, user_id: int, settings: Dict[str, str]):
     try:
+
         for setting_name, setting_value in settings.items():
             db.query(UserSetting).filter(UserSetting.UserId == user_id, UserSetting.SettingName == setting_name).update({"SettingValue": setting_value})
         db.commit()
-        return {"message": "User settings updated successfully"}
+        # Retrieve updated user settings
+        user_settings = db.query(UserSetting.SettingName, UserSetting.SettingValue).filter(
+            UserSetting.UserId == user_id).all()
+        return user_settings
     except Exception as e:
         db.rollback()
         return {"error": str(e)}

@@ -3,8 +3,9 @@ from app.db import database
 from app.user.models import User
 from app.gesture.models import Gesture
 from app.userFavouriteGesture.models import UserFavouriteGesture
-from app.userFavouriteGesture.schemas import AddUserFavoriteGestureRequest
+from app.userFavouriteGesture.schemas import AddUserFavoriteGestureRequest, UserFavoriteGestureSchema
 from fastapi import HTTPException
+from app.lesson.models import Lesson  # Import your Lesson model
 
 
 def get_user_favorite_gestures(db: Session, user_id: int):
@@ -25,7 +26,7 @@ def get_user_favorite_gestures(db: Session, user_id: int):
         # Convert the result to a list of dictionaries for JSON serialization
         user_favorite_gestures = [{"UserId": row[0], "GestureId": row[1]} for row in user_favorite_gestures]
 
-        return  user_favorite_gestures
+        return user_favorite_gestures
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -59,6 +60,7 @@ def add_user_favorite_gesture(db: Session, request: AddUserFavoriteGestureReques
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 def delete_user_favorite_gesture(db: Session, user_id: int, gesture_id: int):
     try:
         # Check if the user exists
@@ -81,6 +83,45 @@ def delete_user_favorite_gesture(db: Session, user_id: int, gesture_id: int):
         db.commit()
 
         return {"message": "User's favorite gesture deleted successfully"}, 200
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def get_user_favorite_gestures_with_details(db: Session, user_id: int):
+    try:
+        # Check if the user exists
+        user = db.query(User).filter_by(Id=user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Join UserFavouriteGesture with Gesture and Lesson (adjust the join conditions as needed)
+        user_favorite_gestures = db.query(
+            UserFavouriteGesture.UserId,
+            UserFavouriteGesture.GestureId,
+            Lesson.LessonType,  # Adjust according to your actual model
+            Gesture.Description,
+            Gesture.Resource
+        ).join(
+            Gesture, UserFavouriteGesture.GestureId == Gesture.Id
+        ).join(
+            Lesson, Gesture.LessonId == Lesson.Id  # Adjust the join condition as needed
+        ).filter(
+            UserFavouriteGesture.UserId == user_id
+        ).all()
+
+        # Convert the result to a list of dictionaries for JSON serialization
+        user_favorite_gestures = [
+            {
+                "UserId": row[0],
+                "GestureId": row[1],
+                "LessonType": row[2],
+                "Description": row[3],
+                "Resource": row[4]
+            } for row in user_favorite_gestures
+        ]
+
+        return user_favorite_gestures
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

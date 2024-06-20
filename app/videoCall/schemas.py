@@ -5,7 +5,7 @@ from typing import List
 
 class VideoCallStart(BaseModel):
     caller_id: int
-    receiver_id: int
+    receiver_ids: List[int]  # Change to a list to accept multiple receiver IDs
 
 
 class VideoCallAccept(BaseModel):

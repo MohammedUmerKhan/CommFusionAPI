@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+from typing import List
 
 class TranscriptSegmentBase(BaseModel):
     UserId: int
@@ -20,3 +20,6 @@ class TranscriptSegment(TranscriptSegmentBase):
     SegmentNumber: int
     class Config:
         from_attributes = True
+
+class TranscriptSegmentList(BaseModel):
+    segments: List[TranscriptSegmentCreate]
